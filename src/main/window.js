@@ -80,6 +80,15 @@ function createWindow({ startHidden = false } = {}) {
     if (!startHidden) win.show();
     maybeDevScreenshot();
   });
+  // Fallback: software-rendering setups occasionally never emit
+  // ready-to-show — don't leave the user with an invisible widget.
+  setTimeout(() => {
+    if (!startHidden && win && !win.isDestroyed() && !win.isVisible()) {
+      console.log('[window] ready-to-show timed out; showing anyway');
+      win.show();
+      maybeDevScreenshot();
+    }
+  }, 4000);
 
   // Close/minimize hide to tray — the only real quit is via the tray menu.
   win.on('close', (e) => {

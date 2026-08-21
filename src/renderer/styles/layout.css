@@ -92,6 +92,9 @@
   gap: 8px;
 }
 
+/* Author display:flex would beat the UA's [hidden] rule — restate it. */
+.view[hidden] { display: none; }
+
 /* ---- Status bar ---- */
 #statusbar {
   display: flex;
