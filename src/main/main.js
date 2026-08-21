@@ -23,6 +23,12 @@ const { registerIpc } = require('./ipc');
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
+  // A tiny text widget gains nothing from a separate GPU process, and on
+  // some NVIDIA/Wayland setups the GPU process fails to launch entirely
+  // ("GPU process launch failed: error_code=1002"). Running GPU code
+  // in-process sidesteps it; rendering here is text, so the cost is nil.
+  app.commandLine.appendSwitch('in-process-gpu');
+  app.disableHardwareAcceleration();
   app.on('second-instance', () => windowMod.showWindow());
 
   registerSchemes(); // must happen before app ready
