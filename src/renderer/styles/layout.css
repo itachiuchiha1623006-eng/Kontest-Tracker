@@ -1,0 +1,120 @@
+/* Widget frame: header (drag region), tabs, scrollable views, status bar. */
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* ---- Titlebar: the drag region ---- */
+#titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-h);
+  padding: 0 6px 0 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-soft);
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.brand-name {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.titlebar-actions {
+  display: flex;
+  gap: 2px;
+  -webkit-app-region: no-drag;
+}
+
+/* ---- Tabs ---- */
+#tabs {
+  display: flex;
+  height: var(--tabs-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+.tab {
+  flex: 1;
+  font-size: calc(var(--font-size) - 1.5px);
+  font-weight: 600;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover { color: var(--text); }
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ---- Views ---- */
+#views {
+  flex: 1;
+  min-height: 0;
+  -webkit-app-region: no-drag;
+}
+
+.view {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---- Status bar ---- */
+#statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: var(--statusbar-h);
+  padding: 0 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+#source-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+#status-msg {
+  font-size: calc(var(--font-size) - 2.5px);
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

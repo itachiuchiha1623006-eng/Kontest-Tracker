@@ -1,0 +1,56 @@
+/* Design tokens + reset. Theme/accent values live in themes.css. */
+
+:root {
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Ubuntu', sans-serif;
+  --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Ubuntu Mono', Menlo, monospace;
+  --font-size: 13px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --header-h: 40px;
+  --tabs-h: 34px;
+  --statusbar-h: 26px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font);
+  font-size: var(--font-size);
+  color: var(--text);
+  background: transparent;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+input, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
