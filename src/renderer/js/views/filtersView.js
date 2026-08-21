@@ -5,7 +5,7 @@
 
 import { api } from '../api.js';
 import { el, makeCheckRow, makeToggle } from '../components/widgets.js';
-import { FILTERABLE_KEYS } from '../../shared/platforms.js';
+import { FILTERABLE_KEYS } from '../../shared/platforms.mjs';
 
 const PLATFORM_COLORS = {
   codeforces: '#3b82f6',

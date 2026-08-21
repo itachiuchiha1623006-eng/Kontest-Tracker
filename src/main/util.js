@@ -40,11 +40,12 @@ function clampInt(value, min, max, fallback) {
   return Math.min(max, Math.max(min, Math.round(n)));
 }
 
-/** Load the ESM shared module (platforms.js) from this CommonJS process. */
+/** Load the ESM shared module (platforms.mjs) from this CommonJS process. */
 let sharedPromise = null;
 function loadShared() {
   if (!sharedPromise) {
-    sharedPromise = import(path.join(APP_ROOT, 'src', 'shared', 'platforms.js'));
+    const sharedUrl = new URL(`file://${path.join(APP_ROOT, 'src', 'shared', 'platforms.mjs')}`);
+    sharedPromise = import(sharedUrl.href);
   }
   return sharedPromise;
 }

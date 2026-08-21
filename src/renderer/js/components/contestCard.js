@@ -16,7 +16,7 @@ function platformColor(platformKey) {
   return CARD_COLORS[platformKey] || style.getPropertyValue('--accent').trim() || '#8b6dff';
 }
 
-// Mirrors src/shared/platforms.js colors (kept in sync; renderer can't
+// Mirrors src/shared/platforms.mjs colors (kept in sync; renderer can't
 // import the ESM shared module through the app://shared host without an
 // extra fetch — a static map is simpler and CSP-safe).
 const CARD_COLORS = {
