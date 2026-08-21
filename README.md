@@ -4,7 +4,11 @@ A small **always-on-top desktop widget** for Linux (built on Ubuntu GNOME/Waylan
 
 No taskbar entry, no big window — just a compact widget that floats above your work, with live countdowns, filters, reminders, the LeetCode daily challenge, and themes.
 
-![screenshot](docs/screenshot.png)
+![screenshot](docs/home.png)
+![screenshot](docs/filters.png)
+![screenshot](docs/daily-streak.png)
+![screenshot](docs/settings.png)
+
 
 ## Features
 
