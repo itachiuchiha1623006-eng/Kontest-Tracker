@@ -64,11 +64,9 @@ function getContestsSnapshot() {
 }
 
 function getDailySnapshot() {
-  const dailyProgress = require('./dailyProgress');
   return {
     daily: state.daily,
     fetchedAt: cache.readDaily().fetchedAt,
-    progress: dailyProgress.getProgress(),
   };
 }
 

@@ -16,7 +16,7 @@ No taskbar entry, no big window — just a compact widget that floats above your
 - **Multi-source aggregation** with per-source health dots in the status bar (green ok / amber stale / red error)
 - **Filters**: platform toggles, start-time window, max duration, hide-running, search, sort
 - **Reminders**: desktop notifications 15 / 30 / 60 minutes before start (configurable), per-contest mute
-- **LeetCode Daily**: today's problem, mark-done tracking, current + best streak, 14-day history strip
+- **Contest attendance**: mark contests attended with the ✓ button (ended contests stay listed for 7 days); Tracker tab shows LeetCode-style stats and a month heatmap of attended days
 - **Themes**: dark/light × violet/teal/amber/rose accents, adjustable font size
 - **Widget behavior**: frameless, always-on-top (toggleable), hides to tray on close/minimize, position remembered, optional launch-on-startup
 - **Offline-safe**: everything cached to disk; a failed source never breaks the others

@@ -8,7 +8,6 @@ const { ipcMain, shell, app } = require('electron');
 const settingsMod = require('./settings');
 const scheduler = require('./scheduler');
 const reminders = require('./reminders');
-const dailyProgress = require('./dailyProgress');
 const attendance = require('./attendance');
 const autostart = require('./autostart');
 const windowMod = require('./window');
@@ -84,7 +83,6 @@ function registerIpc() {
   // ---- daily ----
   ipcMain.handle('daily:get', wrap(() => scheduler.getDailySnapshot()));
   ipcMain.handle('daily:refresh', wrap(() => scheduler.refreshDaily()));
-  ipcMain.handle('daily:markDone', wrap(({ date, done }) => dailyProgress.markDone(date, done)));
 
   // ---- attendance ----
   ipcMain.handle('attendance:get', wrap(() => attendance.getState()));

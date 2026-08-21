@@ -413,8 +413,6 @@
 .daily-title { font-weight: 700; line-height: 1.35; }
 .daily-qid { color: var(--text-dim); font-family: var(--mono); font-size: calc(var(--font-size) - 1px); }
 
-.done-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
-
 .streak-row { display: flex; gap: 8px; }
 
 .streak-box {

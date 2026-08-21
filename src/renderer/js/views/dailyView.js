@@ -1,5 +1,5 @@
 /**
- * Daily view: today's LeetCode problem (mark-done toggle) plus the
+ * Daily view: today's LeetCode problem (info + quick link) plus the
  * contest attendance tracker — LeetCode-submissions-calendar style, but
  * counting contests attended instead of submissions. Days with at least
  * one attended contest glow in the month heatmap; hovering a day lists
@@ -7,7 +7,7 @@
  */
 
 import { api } from '../api.js';
-import { el, icon, renderEmpty, makeToggle } from '../components/widgets.js';
+import { el, icon, renderEmpty } from '../components/widgets.js';
 import { localDateKey } from '../format.js';
 
 let cardSlot;
@@ -39,37 +39,22 @@ function buildMonthCells(now) {
 }
 
 export function renderDaily(state) {
-  const { daily, progress, attendance } = state;
+  const { daily, attendance } = state;
   cardSlot.replaceChildren();
 
-  renderDailyCard(daily, progress);
+  renderDailyCard(daily);
   renderAttendanceCard(attendance);
 }
 
-function renderDailyCard(daily, progress) {
+function renderDailyCard(daily) {
   if (!daily) {
     cardSlot.append(renderEmpty('📅', 'No daily challenge yet', 'Refresh to fetch today’s LeetCode problem.'));
     return;
   }
 
-  const todayKey = localDateKey();
-  // The challenge's own date string is the progress key; fall back to the
-  // local date when LeetCode's date is missing/malformed.
-  const doneKey = /^\d{4}-\d{2}-\d{2}$/.test(daily.date) ? daily.date : todayKey;
-  const isDone = Boolean(progress?.doneDates?.includes(doneKey));
-
-  const toggle = makeToggle(isDone, (next) => {
-    api.markDailyDone({ date: doneKey, done: next })
-      .then((res) => {
-        if (res?.error) return;
-        window.dispatchEvent(new CustomEvent('kontest:daily-progress', { detail: res.doneDates ? res : null }));
-      })
-      .catch(() => {});
-  }, 'Mark today’s problem as done');
-
   cardSlot.append(el('div', { class: 'daily-card' }, [
     el('div', { class: 'daily-top' }, [
-      el('span', { class: 'daily-date', text: `Daily · ${daily.date || todayKey}` }),
+      el('span', { class: 'daily-date', text: `Daily · ${daily.date}` }),
       el('button', {
         class: 'icon-btn',
         title: 'Open problem on LeetCode',
@@ -79,10 +64,6 @@ function renderDailyCard(daily, progress) {
     el('div', {}, [
       el('span', { class: 'daily-qid', text: `#${daily.questionId} ` }),
       el('span', { class: 'daily-title', text: daily.title }),
-    ]),
-    el('div', { class: 'done-toggle' }, [
-      toggle,
-      el('span', { text: isDone ? 'Done today — nice!' : 'Mark done today' }),
     ]),
   ]));
 }

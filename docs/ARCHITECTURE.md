@@ -18,13 +18,13 @@ Three isolated layers, standard Electron security posture:
 │  ├── normalize.js   validation/clamps (URL allowlist)      │
 │  ├── cache.js       per-source JSON cache (atomic writes)  │
 │  ├── settings.js    defaults + merge + persist             │
-│  ├── dailyProgress  done-dates + streak derivation         │
+│  ├── attendance     contest attendance records + stats     │
 │  ├── autostart.js   ~/.config/autostart .desktop writer    │
 │  └── ipc.js         every ipcMain.handle channel           │
 └──────────────┬─────────────────────────────────────────────┘
                │ contextBridge (preload.js → window.kontest)
 ┌──────────────▼─────────────────────────────────────────────┐
-│ PRELOAD — allowlisted invoke wrappers + 4 push channels    │
+│ PRELOAD — allowlisted invoke wrappers + 5 push channels    │
 └──────────────┬─────────────────────────────────────────────┘
 ┌──────────────▼─────────────────────────────────────────────┐
 │ RENDERER (ES modules, sandboxed, zero Node)                │
@@ -78,13 +78,14 @@ Invoke channels (`ipcMain.handle`), all wrapped so throws become `{ error }`:
 | `clist:test` | live credential probe |
 | `contests:get` | cache-only snapshot `{ contests, sources, nowSec }` |
 | `contests:refresh` | fetch all enabled sources, merge, cache, broadcast |
-| `daily:get / refresh / markDone` | daily challenge + progress |
+| `daily:get / refresh` | LeetCode daily challenge (info card) |
+| `attendance:get / toggle` | contest attendance records + computed stats; toggle broadcasts the new state |
 | `win:hide / setAlwaysOnTop / getState` | widget window control |
 | `app:openExternal` | **allowlist-enforced** (https + known platform hosts only) |
 | `reminders:test` | sample notification |
 | `app:getVersions / openDataFolder / quit` | about + lifecycle |
 
-Push channels (`webContents.send`): `push:contests-updated`, `push:daily-updated`, `push:settings-changed`, `push:resync`.
+Push channels (`webContents.send`): `push:contests-updated`, `push:daily-updated`, `push:attendance-changed`, `push:settings-changed`, `push:resync`.
 
 The preload exposes exactly these as `window.kontest`; nothing else crosses the bridge.
 
@@ -132,10 +133,10 @@ Merge keeps the base contest's stable `id`/`url`/`name`, unions `sources`, fills
 │   └── daily.json
 └── state/
     ├── reminders.json         # { fired: { "<contestId>:<lead>": ts } }
-    └── daily-progress.json    # { done: { "YYYY-MM-DD": { doneAt } } }
+    └── attendance.json        # { attended: { "<contestId>": { dateKey, name, platformKey, url, start, markedAt } } }
 ```
 
-All writes are atomic (tmp + rename) through a single promise chain. Corrupt/missing files fall back to defaults — the app never crashes on bad JSON. Streaks are **computed** from done-dates, never stored.
+All writes are atomic (tmp + rename) through a single promise chain. Corrupt/missing files fall back to defaults — the app never crashes on bad JSON. Attendance stats (per-day grouping, this-month count) are **computed** from the stored records, never stored.
 
 ## Window & tray behavior (GNOME Wayland)
 

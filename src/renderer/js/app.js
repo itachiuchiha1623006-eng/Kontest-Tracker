@@ -100,15 +100,12 @@ async function boot() {
 
   window.addEventListener('kontest:refresh', doRefresh);
   window.addEventListener('kontest:open-settings', () => showView('settings'));
-  window.addEventListener('kontest:daily-progress', (e) => {
-    if (e.detail) store.patch({ progress: e.detail });
-  });
 
   // 3. Cached data — instant, offline-safe.
   const snap = await api.getContests();
   if (!snap?.error) store.patch({ contests: snap.contests, sources: snap.sources });
   const daily = await api.getDaily();
-  if (!daily?.error) store.patch({ daily: daily.daily, progress: daily.progress });
+  if (!daily?.error) store.patch({ daily: daily.daily });
   const attendance = await api.getAttendance();
   if (!attendance?.error) store.patch({ attendance });
 
@@ -117,7 +114,7 @@ async function boot() {
     store.patch({ contests: s.contests, sources: s.sources });
   });
   api.on('push:daily-updated', (s) => {
-    store.patch({ daily: s.daily, progress: s.progress });
+    store.patch({ daily: s.daily });
   });
   api.on('push:attendance-changed', (a) => {
     store.patch({ attendance: a });

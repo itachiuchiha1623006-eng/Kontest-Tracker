@@ -30,7 +30,6 @@ contextBridge.exposeInMainWorld('kontest', {
   // daily challenge
   getDaily: invoke('daily:get'),
   refreshDaily: invoke('daily:refresh'),
-  markDailyDone: invoke('daily:markDone'),
 
   // contest attendance
   getAttendance: invoke('attendance:get'),

@@ -10,7 +10,6 @@ const state = {
   contests: [],
   sources: [],
   daily: null,
-  progress: null,
   attendance: null,
   refreshing: false,
 };
