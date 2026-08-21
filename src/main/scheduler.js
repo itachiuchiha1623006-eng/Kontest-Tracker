@@ -31,16 +31,23 @@ const state = {
 /** Build the merged snapshot from whatever is cached (boot path). */
 function loadSnapshotFromCache() {
   const settings = settingsMod.getSettings();
+  const maxAgeSec = settings.behavior.refreshIntervalMinutes * 60;
   const bySource = new Map();
   const statuses = [];
   for (const source of sources.SOURCES) {
     const enabled = sources.isSourceEnabled(source, settings);
     const cached = cache.readSourceResult(source.key);
+    const ageSec = cached?.fetchedAt ? nowSec() - cached.fetchedAt : Infinity;
+    const stateName = !enabled
+      ? 'disabled'
+      : !cached?.fetchedAt
+        ? 'empty'
+        : ageSec > maxAgeSec ? 'stale' : 'ok';
     statuses.push({
       key: source.key,
       label: source.label,
       enabled,
-      state: !enabled ? 'disabled' : cached?.fetchedAt ? 'stale' : 'empty',
+      state: stateName,
       fetchedAt: cached?.fetchedAt || 0,
       error: cached?.error || null,
       count: cached?.contests?.length || 0,
