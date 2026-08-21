@@ -14,6 +14,7 @@
   --warn: #fbbf24;
   --error: #f87171;
   --shadow: 0 10px 36px rgba(0, 0, 0, 0.5);
+  --calendar-accent: #ffa116;
 }
 
 [data-theme='light'] {
@@ -30,6 +31,7 @@
   --warn: #b45309;
   --error: #dc2626;
   --shadow: 0 10px 30px rgba(30, 35, 60, 0.16);
+  --calendar-accent: #f97316;
 }
 
 [data-accent='violet'] { --accent: #8b6dff; --accent-contrast: #ffffff; --accent-soft: rgba(139, 109, 255, 0.16); }

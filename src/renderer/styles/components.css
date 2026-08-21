@@ -87,6 +87,10 @@
 
 .contest-card.running { border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
 
+/* Recently finished contests linger so attendance can still be marked. */
+.contest-card.ended { opacity: 0.55; }
+.contest-card.ended:hover { opacity: 1; }
+
 .cc-stripe {
   width: 4px;
   border-radius: var(--radius-sm) 0 0 var(--radius-sm);
@@ -140,6 +144,12 @@
 .cc-actions .icon-btn { width: 26px; height: 26px; }
 .cc-actions .icon-btn.muted { color: var(--text-faint); }
 
+/* Attendance check: orange when the contest is marked attended. */
+.icon-btn.attend.active {
+  color: var(--calendar-accent);
+  background: color-mix(in srgb, var(--calendar-accent) 16%, transparent);
+}
+
 /* ---- Chips & badges ---- */
 .chip {
   display: inline-flex;
@@ -165,6 +175,8 @@
 }
 
 .chip.rated { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+
+.chip.ended { background: var(--surface-3); color: var(--text-faint); }
 
 /* ---- Section headings / rows ---- */
 .section-title {
@@ -416,17 +428,72 @@
 .streak-box .num { font-family: var(--mono); font-size: calc(var(--font-size) + 7px); font-weight: 700; }
 .streak-box .lbl { font-size: calc(var(--font-size) - 3.5px); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
 
-.history-strip { display: flex; gap: 4px; justify-content: space-between; padding: 2px 0; }
-
-.hist-day {
-  flex: 1;
-  height: 14px;
-  border-radius: 4px;
-  background: var(--surface-3);
+/* LeetCode-stats style counter: icon + count on one line. */
+.streak-box.lc-streak {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
 }
 
-.hist-day.done { background: var(--accent); }
-.hist-day.today { outline: 1.5px solid var(--text-dim); }
+.streak-box.lc-streak .stat-ico {
+  display: inline-flex;
+  color: var(--calendar-accent);
+}
+
+.streak-box.lc-streak .stat-ico.dim { opacity: 0.55; }
+.streak-box.lc-streak .stat-ico svg { width: calc(var(--font-size) + 6px); height: calc(var(--font-size) + 6px); }
+.streak-box.lc-streak .num { color: var(--calendar-accent); }
+.streak-box.lc-streak .lbl { text-transform: none; letter-spacing: 0; }
+
+/* ---- Month calendar heatmap (LeetCode-submissions style, for attendance) ---- */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-wd {
+  text-align: center;
+  font-size: calc(var(--font-size) - 4px);
+  font-weight: 700;
+  color: var(--text-faint);
+  padding-bottom: 2px;
+}
+
+.cal-cell {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-size: calc(var(--font-size) - 2.5px);
+  font-family: var(--mono);
+}
+
+.cal-cell.empty { background: transparent; }
+
+.cal-cell.done {
+  background: var(--calendar-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.cal-cell.today {
+  outline: 1.5px solid var(--text-dim);
+  outline-offset: 1px;
+}
+
+.cal-cell.done.today { outline-color: var(--text); }
+
+.att-hint {
+  font-size: calc(var(--font-size) - 2.5px);
+  color: var(--text-faint);
+  line-height: 1.4;
+}
 
 /* ---- Search row ---- */
 .search-row { display: flex; gap: 6px; }

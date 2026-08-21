@@ -78,6 +78,9 @@ export const ALLOWED_HOSTS = [
 /** Platform keys that can be toggled in filters (excludes the catch-all). */
 export const FILTERABLE_KEYS = Object.keys(PLATFORMS).filter((k) => k !== 'other');
 
+/** Finished contests stay listed this long so attendance can still be marked. */
+export const ENDED_RETENTION_SEC = 7 * 86400;
+
 /** Lowercased alphanumerics only — used for fuzzy name comparison. */
 export function slugifyName(name) {
   return String(name || '')

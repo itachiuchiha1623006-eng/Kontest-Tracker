@@ -11,6 +11,7 @@ const state = {
   sources: [],
   daily: null,
   progress: null,
+  attendance: null,
   refreshing: false,
 };
 

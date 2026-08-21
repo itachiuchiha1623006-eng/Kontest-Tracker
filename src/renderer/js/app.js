@@ -109,6 +109,8 @@ async function boot() {
   if (!snap?.error) store.patch({ contests: snap.contests, sources: snap.sources });
   const daily = await api.getDaily();
   if (!daily?.error) store.patch({ daily: daily.daily, progress: daily.progress });
+  const attendance = await api.getAttendance();
+  if (!attendance?.error) store.patch({ attendance });
 
   // 4. Push channels keep us in sync with main-process refreshes.
   api.on('push:contests-updated', (s) => {
@@ -116,6 +118,9 @@ async function boot() {
   });
   api.on('push:daily-updated', (s) => {
     store.patch({ daily: s.daily, progress: s.progress });
+  });
+  api.on('push:attendance-changed', (a) => {
+    store.patch({ attendance: a });
   });
   api.on('push:settings-changed', (s) => {
     store.patch({ settings: s });

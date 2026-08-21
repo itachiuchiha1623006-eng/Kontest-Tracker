@@ -70,8 +70,10 @@ function mergeContests(contestsBySource, nowSecValue) {
     }
   }
 
+  // Keep recently finished contests around (dimmed in the UI) so attendance
+  // can still be marked after a contest ends.
   return base
-    .filter((c) => c.end > now)
+    .filter((c) => c.end > now - shared.ENDED_RETENTION_SEC)
     .sort((a, b) => a.start - b.start)
     .slice(0, HARD_CAP);
 }

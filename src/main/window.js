@@ -117,32 +117,44 @@ let _isQuitting = false;
 function setQuitting(v) { _isQuitting = v; }
 function app_isQuitting() { return _isQuitting; }
 
-/** Dev hook: KONTEST_SHOT=<path> captures the window to a PNG, then quits. */
+/** Dev hook: KONTEST_SHOT=<path> captures the window to a PNG, then quits.
+ *  KONTEST_SHOT_VIEW=<contests|daily|filters|settings> switches views first. */
 function maybeDevScreenshot() {
   const target = process.env.KONTEST_SHOT;
   if (!target) return;
   setTimeout(() => {
     const fs = require('fs');
     const { app } = require('electron');
-    // capturePage can hang with software compositing — race it with a timeout.
-    const captured = win.webContents.capturePage().catch(() => null);
-    const timeout = new Promise((resolve) => setTimeout(() => resolve(null), 8000));
-    Promise.race([captured, timeout]).then((img) => {
-      if (img && !img.isEmpty()) {
-        fs.writeFileSync(target, img.toPNG());
-        console.log(`[window] screenshot saved: ${target}`);
-      } else {
-        // Visual capture unavailable — dump the rendered text instead.
-        win.webContents.executeJavaScript('document.body.innerText')
-          .then((text) => {
-            fs.writeFileSync(`${target}.txt`, text);
-            console.log(`[window] capturePage unavailable; DOM text dumped to ${target}.txt`);
-          })
-          .catch((err) => console.error('[window] DOM dump failed:', err.message));
-      }
-      console.log(`[window] visible=${win.isVisible()} bounds=${JSON.stringify(win.getBounds())}`);
-      app.quit();
-    });
+
+    const switchView = process.env.KONTEST_SHOT_VIEW
+      ? win.webContents.executeJavaScript(
+        `document.querySelector('#tabs .tab[data-view="${process.env.KONTEST_SHOT_VIEW}"]')?.click()`,
+      ).catch(() => {})
+      : Promise.resolve();
+
+    switchView
+      .then(() => new Promise((r) => setTimeout(r, 800)))
+      .then(() => {
+        // capturePage can hang with software compositing — race it with a timeout.
+        const captured = win.webContents.capturePage().catch(() => null);
+        const timeout = new Promise((resolve) => setTimeout(() => resolve(null), 8000));
+        return Promise.race([captured, timeout]).then((img) => {
+          if (img && !img.isEmpty()) {
+            fs.writeFileSync(target, img.toPNG());
+            console.log(`[window] screenshot saved: ${target}`);
+          } else {
+            // Visual capture unavailable — dump the rendered text instead.
+            win.webContents.executeJavaScript('document.body.innerText')
+              .then((text) => {
+                fs.writeFileSync(`${target}.txt`, text);
+                console.log(`[window] capturePage unavailable; DOM text dumped to ${target}.txt`);
+              })
+              .catch((err) => console.error('[window] DOM dump failed:', err.message));
+          }
+          console.log(`[window] visible=${win.isVisible()} bounds=${JSON.stringify(win.getBounds())}`);
+          app.quit();
+        });
+      });
   }, 6000);
 }
 

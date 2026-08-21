@@ -9,6 +9,7 @@ const settingsMod = require('./settings');
 const scheduler = require('./scheduler');
 const reminders = require('./reminders');
 const dailyProgress = require('./dailyProgress');
+const attendance = require('./attendance');
 const autostart = require('./autostart');
 const windowMod = require('./window');
 const clist = require('./sources/clist');
@@ -84,6 +85,14 @@ function registerIpc() {
   ipcMain.handle('daily:get', wrap(() => scheduler.getDailySnapshot()));
   ipcMain.handle('daily:refresh', wrap(() => scheduler.refreshDaily()));
   ipcMain.handle('daily:markDone', wrap(({ date, done }) => dailyProgress.markDone(date, done)));
+
+  // ---- attendance ----
+  ipcMain.handle('attendance:get', wrap(() => attendance.getState()));
+  ipcMain.handle('attendance:toggle', wrap((contest) => {
+    const state = attendance.toggle(contest);
+    windowMod.broadcast('push:attendance-changed', state);
+    return state;
+  }));
 
   // ---- window ----
   ipcMain.handle('win:hide', wrap(() => {

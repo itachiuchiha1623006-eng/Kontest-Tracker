@@ -1,12 +1,15 @@
 /**
  * Pure filtering/sorting of the merged contest list. Contest status is
- * derived here (never stored): running = start <= now < end.
+ * derived here (never stored): running = start <= now < end; ended
+ * contests linger for ENDED_RETENTION_SEC so attendance can be marked.
  */
+
+import { ENDED_RETENTION_SEC } from '../../shared/platforms.mjs';
 
 export function contestStatus(contest, nowSec) {
   if (contest.start > nowSec) return 'upcoming';
   if (contest.end > nowSec) return 'running';
-  return 'finished';
+  return 'ended';
 }
 
 /**
@@ -19,7 +22,8 @@ export function applyFilters(contests, settings, nowSec) {
   const search = (filters.search || '').trim().toLowerCase();
 
   const filtered = contests.filter((c) => {
-    if (c.end <= nowSec) return false;
+    const status = contestStatus(c, nowSec);
+    if (status === 'ended' && c.end <= nowSec - ENDED_RETENTION_SEC) return false;
     // Platform toggles: 'other' shows only when the clist source is on.
     if (c.platformKey === 'other') {
       if (!platforms.clist) return false;
@@ -44,7 +48,9 @@ export function applyFilters(contests, settings, nowSec) {
 }
 
 export function sortContests(contests, sortBy, nowSec) {
-  const status = (c) => (c.start <= nowSec ? 0 : 1); // running pinned first
+  // running pinned first, then upcoming, ended last.
+  const order = { running: 0, upcoming: 1, ended: 2 };
+  const status = (c) => order[contestStatus(c, nowSec)] ?? 1;
   const sorted = [...contests];
   switch (sortBy) {
     case 'name':

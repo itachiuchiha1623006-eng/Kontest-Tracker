@@ -1,9 +1,10 @@
 /**
  * Contest card + hero card. Clicking anywhere opens the contest URL;
- * the bell toggles per-contest reminder mute.
+ * the bell toggles per-contest reminder mute; the check marks attendance.
  */
 
 import { api } from '../api.js';
+import { store } from '../state.js';
 import { el, icon } from './widgets.js';
 import { formatCountdown, formatDateTime, formatDuration } from '../format.js';
 import { registerTicker } from '../countdownTicker.js';
@@ -70,10 +71,11 @@ export function renderHero(contest) {
 export function renderContestCard(contest, settings, nowSec) {
   const status = contestStatus(contest, nowSec);
   const muted = Boolean(settings.reminders.mutedContests[contest.id]);
+  const attended = Boolean(store.get().attendance?.attendedIds?.includes(contest.id));
 
   const countdown = el('div', {
     class: `cc-countdown${status === 'running' ? ' live' : ''}`,
-    text: status === 'running' ? 'LIVE' : '—',
+    text: status === 'running' ? 'LIVE' : status === 'ended' ? 'ended' : '—',
   });
 
   const body = el('div', { class: 'cc-body' }, [
@@ -87,7 +89,9 @@ export function renderContestCard(contest, settings, nowSec) {
       status === 'running'
         ? el('span', { class: 'chip live', text: 'LIVE' })
         : el('span', { text: formatDateTime(contest.start) }),
-      el('span', { text: formatDuration(contest.durationSeconds) }),
+      status === 'ended'
+        ? el('span', { class: 'chip ended', text: 'ended' })
+        : el('span', { text: formatDuration(contest.durationSeconds) }),
       contest.rated ? el('span', { class: 'chip rated', text: 'rated' }) : null,
     ]),
     countdown,
@@ -107,17 +111,40 @@ export function renderContestCard(contest, settings, nowSec) {
     },
   }, [icon(muted ? 'bellOff' : 'bell')]);
 
+  // Attendance toggle: records the contest in the attendance calendar.
+  const attendBtn = el('button', {
+    class: `icon-btn attend${attended ? ' active' : ''}`,
+    title: attended ? 'Attended — click to unmark' : 'Mark as attended',
+    'aria-pressed': String(attended),
+    onclick: (e) => {
+      e.stopPropagation();
+      api.toggleAttendance({
+        id: contest.id,
+        name: contest.name,
+        platformKey: contest.platformKey,
+        platformLabel: contest.platformLabel,
+        url: contest.url,
+        start: contest.start,
+      }).then((res) => {
+        if (!res?.error) store.patch({ attendance: res });
+      }).catch(() => {});
+    },
+  }, [icon('checkCircle')]);
+
+  const actions = [attendBtn];
+  if (status !== 'ended') actions.push(bellBtn);
+
   const card = el('div', {
-    class: `contest-card${status === 'running' ? ' running' : ''}`,
+    class: `contest-card${status === 'running' ? ' running' : ''}${status === 'ended' ? ' ended' : ''}`,
     onclick: () => openContest(contest),
     title: 'Open contest page',
   }, [
     el('div', { class: 'cc-stripe', style: { background: platformColor(contest.platformKey) } }),
     body,
-    el('div', { class: 'cc-actions' }, [bellBtn]),
+    el('div', { class: 'cc-actions' }, actions),
   ]);
 
-  if (status !== 'running') {
+  if (status === 'upcoming') {
     registerTicker(countdown, (now) => {
       const remaining = contest.start - now;
       if (remaining <= 0) {

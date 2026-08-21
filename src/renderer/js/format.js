@@ -49,8 +49,3 @@ export function formatDuration(seconds) {
 export function localDateKey(date = new Date()) {
   return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
 }
-
-/** Date key N days before today's local key. */
-export function localDateKeyMinus(days) {
-  return localDateKey(new Date(Date.now() - days * 86400000));
-}

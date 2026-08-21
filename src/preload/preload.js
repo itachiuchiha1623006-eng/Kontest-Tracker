@@ -9,6 +9,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 const PUSH_CHANNELS = new Set([
   'push:contests-updated',
   'push:daily-updated',
+  'push:attendance-changed',
   'push:settings-changed',
   'push:resync',
 ]);
@@ -30,6 +31,10 @@ contextBridge.exposeInMainWorld('kontest', {
   getDaily: invoke('daily:get'),
   refreshDaily: invoke('daily:refresh'),
   markDailyDone: invoke('daily:markDone'),
+
+  // contest attendance
+  getAttendance: invoke('attendance:get'),
+  toggleAttendance: invoke('attendance:toggle'),
 
   // window
   hideWindow: invoke('win:hide'),

@@ -14,6 +14,7 @@ const normalize = require('./normalize');
 const merge = require('./merge');
 const reminders = require('./reminders');
 const dailyProgress = require('./dailyProgress');
+const attendance = require('./attendance');
 const scheduler = require('./scheduler');
 const windowMod = require('./window');
 const tray = require('./tray');
@@ -54,6 +55,7 @@ async function init() {
   cache.initCache();
   reminders.loadFired();
   dailyProgress.initDailyProgress();
+  attendance.initAttendance();
 
   scheduler.initScheduler({
     broadcast: windowMod.broadcast,
