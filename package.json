@@ -1,0 +1,18 @@
+{
+  "name": "kontest-tracker",
+  "productName": "Kontest Tracker",
+  "version": "0.1.0",
+  "description": "A small always-on-top Linux desktop widget that tracks upcoming competitive programming contests across Codeforces, LeetCode, AtCoder, HackerRank and more.",
+  "author": "harshad",
+  "license": "MIT",
+  "main": "src/main/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "devtools": "electron . --dev --devtools"
+  },
+  "devDependencies": {
+    "electron": "^38.8.6"
+  }
+}
