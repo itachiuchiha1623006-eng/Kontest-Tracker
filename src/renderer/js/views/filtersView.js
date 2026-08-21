@@ -74,7 +74,9 @@ export function renderFilters(state) {
       el('span', { text: 'Hide running contests' }),
       el('span', { class: 'hint', text: 'Only show contests that haven’t started' }),
     ]),
-    makeToggle(!settings.filters.hideRunning === false ? true : !settings.filters.hideRunning, () => {}, 'hide running'),
+    makeToggle(settings.filters.hideRunning, (next) => {
+      api.setSettings({ filters: { hideRunning: next } }).catch(() => {});
+    }, 'hide running'),
   ]));
 
   // ---- Reset ----
