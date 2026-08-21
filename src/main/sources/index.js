@@ -66,12 +66,13 @@ async function fetchAllSources(settings) {
       } catch (err) {
         const disabled = err?.code === 'DISABLED';
         if (!disabled) await cache.writeSourceError(source.key, String(err.message || err));
+        // On failure, fall back to the cached contests (stale beats absent).
         return {
           key: source.key, label: source.label, enabled: !disabled,
           state: disabled ? 'disabled' : 'error',
           fetchedAt: cache.readSourceResult(source.key)?.fetchedAt || 0,
           error: disabled ? null : String(err.message || err),
-          contests: [],
+          contests: disabled ? [] : (cache.readSourceResult(source.key)?.contests || []),
         };
       }
     }),
